@@ -26,18 +26,41 @@ jobs:
       - name: Install Bubblewrap
         run: npm install -g @bubblewrap/cli
 
-      - name: Create TWA Project
+      - name: Create twa-manifest.json manually
         run: |
           mkdir -p twa-project
+          cat > twa-project/twa-manifest.json << 'EOF'
+          {
+            "packageId": "ir.dedhban.print",
+            "host": "print.dedhban.ir",
+            "name": "سیستم چاپ تحت شبکه",
+            "launcherName": "چاپ شبکه",
+            "display": "standalone",
+            "themeColor": "#1a73e8",
+            "navigationColor": "#000000",
+            "backgroundColor": "#ffffff",
+            "startUrl": "/",
+            "iconUrl": "https://print.dedhban.ir/static/icon-512.png",
+            "appVersion": "1.0.0",
+            "appVersionCode": 1,
+            "signingKey": {
+              "path": "./android.keystore",
+              "alias": "android"
+            },
+            "webManifestUrl": "https://print.dedhban.ir/manifest.json",
+            "minSdkVersion": 19
+          }
+          EOF
+
+      - name: Generate Android project
+        run: |
           cd twa-project
-          # پاسخ خودکار به سوالات Bubblewrap با yes
-          yes | bubblewrap init --manifest https://print.dedhban.ir/manifest.json --directory . --skipPwaValidation || true
+          bubblewrap update --skipPwaValidation
 
       - name: Build APK
         run: |
           cd twa-project
-          # پاسخ خودکار به سوالات در مرحله build
-          yes | bubblewrap build --skipPwaValidation
+          bubblewrap build --skipPwaValidation
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
