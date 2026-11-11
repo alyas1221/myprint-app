@@ -30,12 +30,14 @@ jobs:
         run: |
           mkdir -p twa-project
           cd twa-project
-          bubblewrap init --manifest https://print.dedhban.ir/manifest.json --directory . --skipPwaValidation || true
+          # پاسخ خودکار به سوالات Bubblewrap با yes
+          yes | bubblewrap init --manifest https://print.dedhban.ir/manifest.json --directory . --skipPwaValidation || true
 
       - name: Build APK
         run: |
           cd twa-project
-          bubblewrap build --skipPwaValidation
+          # پاسخ خودکار به سوالات در مرحله build
+          yes | bubblewrap build --skipPwaValidation
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
